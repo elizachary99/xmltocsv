@@ -4,9 +4,6 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-		<script src="odometer.min.js"></script>
-		<link rel="stylesheet" href="odometer-theme-default.css" />
-		<link rel="stylesheet" type="text/css" href="dibs.css"></link>
     </head>
     
     <body>
@@ -53,19 +50,11 @@
 			//$("#c").html("");
 			//$(".body").html("");
 			
-			main();
-			
-			function main(){
 			$.getJSON("https://www.chapelhillopendata.org/api/records/1.0/search/?dataset=meeting-room-usage&rows=1000&sort=time&apikey=0f36dcd81171f4408301b87c9afc8f8e1294f744eafa61a0dbda3ea4&callback=?", function(meeting){
                 var lengthOfMeeting = meeting.records.length;
                 // initialize a variable to display the title (today's date) at the top
                 var title = true
                 
-				var bodyOutput = [];
-				var aOutput = [];
-				var bOutput = [];
-				var cOutput = [];
-				
                 // loops through file and adds a row of data to the table after each iteration
                 for (var i = 0; i < meeting.records.length; i++) {
 					console.log(i);
@@ -73,7 +62,7 @@
                     var time = record.fields.time.split(' ')
                     // meeting room info and title
                     if(record.fields.status == "Approved" || record.fields.status == "Pending"){
-						if(time[1] == 'AM' || time[0].split(':')[0] == '12'){
+                        if(time[1] == 'AM' || time[0].split(':')[0] == '12'){
                             var row = [];
                             row.push("<tr>");
                             row.push("<td>" + record.fields.time + " - " + record.fields.endtime + "</td>");
@@ -83,9 +72,9 @@
                             row.push("<td>" + record.fields.status + "</td>");
                             row.push("</tr>");
                             row.join('');
-                            bodyOutput.push(row + '');
+                            $('.body').append(row + '');
                             if(title){
-                                aOutput.push(record.fields.date + '<br>');
+                                $('#a').append(record.fields.date + '<br>');
                                 title = false
                             }
                         }else{
@@ -93,14 +82,14 @@
                         }
                     // monthly popularity data
                     }else if(record.fields.enddate == '%'){
-                        cOutput.push(record.fields.date + " " + record.fields.time + '%<br>');
+                        $('#c').append(record.fields.date + " " + record.fields.time + '%<br>');
                     // usage data
                     }else{
-                        bOutput.push(record.fields.date + " " + record.fields.time + '<br>');
+                        $('#b').append(record.fields.date + " " + record.fields.time + '<br>');
                     }
                 }
-				
-				for (var i = 0; i < meeting.records.length; i++) {
+                
+                for (var i = 0; i < meeting.records.length; i++) {
                     var record = meeting.records[i];
                     var time = record.fields.time.split(' ');
                     if(time[1] == 'PM' && time[0].split(':')[0] != '12'){
@@ -113,30 +102,17 @@
                         row.push("<td>" + record.fields.status + "</td>");
                         row.push("</tr>");
                         row.join('');
-                        bodyOutput.push(row + '');
+                        $('.body').append(row + '');
                         if(title){
-                            aOutput.push(record.fields.date + '<br>');
-                            title = false;
+                            $('#a').append(record.fields.date + '<br>');
+                            title = false
                         }
                     }else{
                         continue;
                     }
-				}
-				
-				bodyOutput.join("");
-				aOutput.join("");
-				bOutput.join("");
-				cOutput.join("");
-				
-				$('.body').html(bodyOutput);
-				$('#a').html(aOutput);
-				$('#b').html(bOutput);
-				$('#c').html(cOutput);
-				
-				setTimeout(function(){main()}, 300000);
-				
-			});
-			}
+                }
+				//setTimeout(function(){main()}, 60000);
+            });
         </script>
 
     </body>
